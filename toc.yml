@@ -4,3 +4,5 @@
   href: xref:Uno.PlatformStudio.Interface
 - name: Skills & Plugins
   href: xref:Uno.PlatformStudio.Skills
+- name: Common Messages and Errors
+  href: xref:Uno.PlatformStudio.Messages
