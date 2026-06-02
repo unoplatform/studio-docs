@@ -1,7 +1,6 @@
 ---
 uid: Uno.PlatformStudio.Messages
 ---
-
 # Common Messages and Errors
 
 Uno Platform Studio surfaces status updates, outcomes, and errors directly in the conversation panel and on the shell. This page lists the messages you are most likely to see, explains what triggers each one, and suggests how to respond.

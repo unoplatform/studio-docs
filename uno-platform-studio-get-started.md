@@ -16,7 +16,7 @@ Use **New** to create a new app with a prompt.
 - You can see the process as it happens in the Agent activity panel and view the app as it builds thanks to Hot Reload.
 - When the app finishes building, you will see a recap summarizing what was generated.
 
-<!-- TODO: Add screenshots — Projects page (New tab), Agent activity panel during scaffold, Post-build recap panel. -->
+![Studio](assets/StudioApp.png)
 
 ### Gallery
 
@@ -30,7 +30,7 @@ When you open a sample, Uno Platform Studio:
 
 The sample is your own copy — any changes you make do not affect the original.
 
-<!-- TODO: Add screenshot — Projects page with Gallery tab showing available Uno sample templates. -->
+![Gallery](assets/Gallery.png)
 
 ## Conversation Panel & AI Agent
 
