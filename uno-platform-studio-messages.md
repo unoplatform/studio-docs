@@ -57,7 +57,7 @@ These messages appear on the login page or when restoring a license.
 | Message | Meaning | What to do |
 | ------- | ------- | ---------- |
 | **License required** | You need a valid Uno Platform license to continue. | Sign in with an account that includes Uno Platform Studio, or import a license file. |
-| **Your license has expired.** | Your license is no longer valid. | Use **Request Trial Extension** or **Purchase Now** from the login page. |
+| **Your license has expired.** | Your license is no longer valid. | Use **Purchase Now** from the login page. |
 | **Your subscription does not include access to Uno Platform Studio. Please ensure your account has the required license.** | You are signed in, but your subscription does not include Studio. | Check your subscription on the Uno Platform account portal. |
 | **Sign in was canceled or failed. Please try again.** | The sign-in flow did not complete. | Retry sign-in. If the issue persists, restart the application. |
 | **The imported file could not be validated.** | The license file you imported is invalid or unsupported. | Verify you exported the correct user file from a signed-in installation. |
