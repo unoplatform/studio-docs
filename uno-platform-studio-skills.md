@@ -4,7 +4,7 @@ uid: Uno.PlatformStudio.Skills
 
 # Skills & Plugins
 
-Skills in Uno Platform Studio are designed to help you complete end-to-end Uno workflows such as scaffolding, building, validating, and iterating. This page explains the user model: skills are delivered through a plugin, and agents can orchestrate those skills for guided flows.
+Skills in Uno Platform Studio are designed to help you complete end-to-end Uno workflows such as scaffolding, building, validating, and iterating. This page explains the user model: skills are delivered through a plugin, and your AI agent picks the relevant ones automatically as it works on your prompts.
 
 ## What Are Skills?
 
@@ -18,70 +18,109 @@ Skills are designed to be composable and versioned so they can evolve without ch
 
 ## Skills vs Plugins
 
-A plugin is the installable unit. The single **`uno-platform`** plugin bundles everything in one install:
-
-- the full Uno skill catalog,
-- the `ui-test` sub-agent for automated UI testing, and
-- the `uno-platform-docs` MCP server for documentation search.
+A plugin is the installable unit. The single **`uno-platform-studio`** plugin bundles the full Uno skill catalog **plus the `uno-platform-docs` remote MCP server**, so skills can search and fetch official Uno Platform documentation out of the box.
 
 The key user mental model is:
 
 > You do not install skills one by one. You install the one Uno plugin that bundles them all.
 
-Because Agent Skills is an open standard, the same `uno-platform` plugin installs in both Claude Code and GitHub Copilot CLI.
+The same `uno-platform-studio` plugin installs in **Claude Code**, **GitHub Copilot CLI**, **GitHub Copilot in VS Code**, and **OpenAI Codex CLI**. Internally, the plugin folder ships Anthropic-native, GitHub-native, and Codex-native manifests side-by-side, so every plugin agent sees a first-class native install without relying on cross-vendor compatibility shims.
 
-## Install the Uno Plugin
+### The bundled `uno-platform-docs` MCP
+
+The plugin's `plugin.json` declares a remote MCP server pointing at the public, no-auth Uno docs endpoint:
+
+```jsonc
+"mcpServers": {
+  "uno-platform-docs": {
+    "type": "http",
+    "url": "https://mcp.platform.uno/v1"
+  }
+}
+```
+
+When you install `uno-platform-studio`, your agent gains four MCP tools automatically:
+
+- `uno_platform_docs_search` — search official documentation (used by skills).
+- `uno_platform_docs_fetch` — fetch a full Uno docs page in markdown (used by skills).
+- `uno_platform_agent_rules_init` — initialization rules and safe-execution guidelines (available to the agent; skills do not need to invoke it).
+- `uno_platform_usage_rules_init` — Uno Platform usage guidelines (same).
+
+No separate MCP connector setup is required on Claude Code, Copilot, or Codex. (claude.ai users already have access to the same MCP through the [connector catalog](https://claude.ai/connectors); the bundled wiring is what makes Claude Code, Copilot CLI, Copilot in VS Code, and Codex CLI work the same way without extra steps.)
+
+## Install the Studio Plugin
 
 The plugin is published from the public [`unoplatform/studio`](https://github.com/unoplatform/studio) repository.
 
 > [!NOTE]
-> The marketplace handle (`uno-agent-skills`) is being finalized ahead of the public release. Confirm the current handle on the [`unoplatform/studio`](https://github.com/unoplatform/studio) repository before running the commands below.
+> Slugs are finalized for the public release: marketplace handle `uno-platform`, plugin name `uno-platform-studio`. Confirm against the [`unoplatform/studio`](https://github.com/unoplatform/studio) repository before running the commands below.
 
 ### Claude Code
 
 ```text
 /plugin marketplace add unoplatform/studio
-/plugin install uno-platform@uno-agent-skills
+/plugin install uno-platform-studio@uno-platform
 /skills
-/agents
 ```
 
 To update an installed plugin on demand:
 
 ```text
-/plugin update uno-platform@uno-agent-skills
+/plugin update uno-platform-studio@uno-platform
 ```
 
 ### GitHub Copilot CLI
 
-The same plugin folder works here — Copilot CLI reads the same Agent Skills format:
+Copilot CLI installs the plugin via the GitHub-native marketplace manifest (`.github/plugin/marketplace.json`):
 
 ```text
 copilot plugin marketplace add unoplatform/studio
+copilot plugin install uno-platform-studio@uno-platform
 ```
 
 ### GitHub Copilot in VS Code
 
-No plugin install is required — Copilot in VS Code reads `SKILL.md` files from disk. You can either install the plugin through Copilot CLI, or copy skill folders into `.github/skills/` (project) or `~/.copilot/skills/` (user).
+Copilot in VS Code supports the same plugin format as Copilot CLI. Add `unoplatform/studio` to the `chat.plugins.marketplaces` setting (the defaults `copilot-plugins` and `awesome-copilot` stay registered), then install **uno-platform-studio** from the agent-plugins picker. VS Code discovers the plugin via the GitHub-native `.github/plugin/marketplace.json`.
+
+Prefer file-level installation? You can also drop individual SKILL.md folders into `.github/skills/` (project) or `~/.copilot/skills/` (user) — see [Where Skills Live](#where-skills-live) below.
+
+### OpenAI Codex CLI
+
+Codex CLI installs the plugin via the Codex-native marketplace manifest (`.agents/plugins/marketplace.json`):
+
+```text
+codex plugin marketplace add unoplatform/studio
+codex plugin install uno-platform-studio@uno-platform
+```
 
 > [!TIP]
 > Image placeholder: Marketplace or repository-based plugin installation flow for Uno.
+
+## Curated Marketplace Listings
+
+The direct `marketplace add` commands above work the moment the `unoplatform/studio` repository is public. For broader discovery, the plugin will also be listed on the following curated catalogs soon after release:
+
+- **Anthropic Official marketplace** at [claude.com/plugins](https://claude.com/plugins) — Claude Code users browse and install from the official catalog.
+- **[`github/awesome-copilot`](https://github.com/github/awesome-copilot)** — community catalog pre-registered as a default marketplace in Copilot CLI and Copilot in VS Code.
+- **Codex CLI** — uses a bring-your-own catalog model; no centralized submission-and-approval marketplace exists yet. Users add `unoplatform/studio` directly via `codex plugin marketplace add`.
+
+Curated listings are an additive discovery layer; install commands and behavior are identical regardless of how you discover the plugin.
 
 ## Where Skills Live
 
 The skills are published in the public [`unoplatform/studio`](https://github.com/unoplatform/studio) repository in two shapes:
 
-- **Inside the plugin** — when you install `uno-platform`, every skill is bundled and becomes available to your agent automatically. Plugin-managed skills are stored in your agent's managed skills location (for example `~/.claude/skills/`).
+- **Inside the plugin** — when you install `uno-platform-studio`, every skill is bundled and becomes available to your agent automatically. Plugin-managed skills are stored in your agent's managed skills location (for example `~/.claude/skills/`).
 - **As standalone skills** — the same skills are also published individually under the repository's top-level `skills/` folder, one folder per skill, for agents that do not support a plugin format.
 
-For agents without plugin support (Cursor, Codex CLI, Gemini CLI, Windsurf, and others), copy the skill folders you want from the repository's `skills/` directory into your agent's skills directory:
+For agents without plugin support (Cursor, Gemini CLI, Windsurf, Cline, Roo Code, opencode, Aider, and others), copy the skill folders you want from the repository's `skills/` directory into your agent's skills directory:
 
 ```text
 git clone https://github.com/unoplatform/studio.git
 cp -r studio/skills/uno-mvux-feed-basics ~/.cursor/skills/
 ```
 
-Each skill is named with the grammar `uno-<category>-<topic>` (for example `uno-mvux-feed-basics` or `uno-material-installation`), so the same slug identifies a skill no matter how it was installed.
+Each skill is named with the grammar `uno-<category>-<topic>` (for example `uno-mvux-feed-basics` or `uno-themes-material`), so the same slug identifies a skill no matter how it was installed.
 
 ## Use Skills Automatically
 
@@ -93,39 +132,16 @@ After plugin installation, skills are generally available implicitly:
 
 No special command is required for basic usage in most flows.
 
-## Use the Uno Agent for Guided Workflows
-
-For more predictable multi-step execution, activate a custom agent:
-
-```text
-/agent <agent-name>
-```
-
-With an agent enabled, you typically get:
-
-- guided scaffold-build-test-iterate loops,
-- better handling of common failure patterns, and
-- clearer automation boundaries for complex tasks.
-
-This mode is recommended for larger features, migrations, and workflow-heavy requests.
-
-The plugin currently ships one sub-agent:
-
-- `ui-test` is a specialized agent for automated Uno UI testing and reporting.
-
 ## Skill Categories
 
-All skills ship inside the single `uno-platform` plugin, grouped into these categories:
+All skills ship inside the single `uno-platform-studio` plugin, grouped into these categories:
 
 | Category | Focus area |
 | --- | --- |
 | `mvux` | MVUX reactive patterns: feeds, state, list state, selection, pagination, messaging |
-| `material` | Material Design 3 theming: colors, typography, controls, lightweight styling, migration |
 | `navigation` | Navigation Extensions: routes, regions, XAML/code navigation, dialogs, tab shells, troubleshooting |
 | `toolkit` | Toolkit controls and helpers: AutoLayout, Card, Drawer, NavigationBar, TabBar, SafeArea, responsiveness |
-| `themes` | Semantic design language: semantic palette, generated brushes, state/opacity system |
-| `testing` | Automated UI testing and assertions, plus a dedicated UI test agent |
-| `xaml` | XAML authoring and error-prevention patterns, including WPF-to-WinUI/Uno conversion |
-| `figma` | Translating Figma designs into Uno Platform XAML |
+| `themes` | Theming: shared semantic design language (palette / brushes / typography), Material theme, and Simple theme |
+| `testing` | Automated UI testing and assertions |
 
 The catalog is sourced from the [`unoplatform/studio`](https://github.com/unoplatform/studio) repository and can evolve over time.
