@@ -18,7 +18,7 @@ Skills are designed to be composable and versioned so they can evolve without ch
 
 ## Skills vs Plugins
 
-A plugin is the installable unit. The single **`uno-platform-studio`** plugin bundles the full Uno skill catalog **plus the `uno-platform-docs` remote MCP server**, so skills can search and fetch official Uno Platform documentation out of the box.
+A plugin is the installable unit. The single **`uno-platform-studio`** plugin bundles the full Uno skill catalog. The Uno documentation MCP that skills use to search and fetch official docs is provided by the **Uno tooling** (`uno.devserver`) — it is not bundled in the plugin.
 
 The key user mental model is:
 
@@ -26,27 +26,14 @@ The key user mental model is:
 
 The same `uno-platform-studio` plugin installs in **Claude Code**, **GitHub Copilot CLI**, **GitHub Copilot in VS Code**, and **OpenAI Codex CLI**. Internally, the plugin folder ships Anthropic-native, GitHub-native, and Codex-native manifests side-by-side, so every plugin agent sees a first-class native install without relying on cross-vendor compatibility shims.
 
-### The bundled `uno-platform-docs` MCP
+### The Uno documentation MCP
 
-The plugin's `plugin.json` declares a remote MCP server pointing at the public, no-auth Uno docs endpoint:
+Skills use the Uno documentation MCP (a remote, no-auth server at `https://mcp.platform.uno/v1`) to search and fetch official docs, via two tools:
 
-```jsonc
-"mcpServers": {
-  "uno-platform-docs": {
-    "type": "http",
-    "url": "https://mcp.platform.uno/v1"
-  }
-}
-```
+- `uno_platform_docs_search` — search official documentation.
+- `uno_platform_docs_fetch` — fetch a full Uno docs page in markdown.
 
-When you install `uno-platform-studio`, your agent gains four MCP tools automatically:
-
-- `uno_platform_docs_search` — search official documentation (used by skills).
-- `uno_platform_docs_fetch` — fetch a full Uno docs page in markdown (used by skills).
-- `uno_platform_agent_rules_init` — initialization rules and safe-execution guidelines (available to the agent; skills do not need to invoke it).
-- `uno_platform_usage_rules_init` — Uno Platform usage guidelines (same).
-
-No separate MCP connector setup is required on Claude Code, Copilot, or Codex. (claude.ai users already have access to the same MCP through the [connector catalog](https://claude.ai/connectors); the bundled wiring is what makes Claude Code, Copilot CLI, Copilot in VS Code, and Codex CLI work the same way without extra steps.)
+This MCP is **registered by the Uno tooling** (`uno.devserver`), not bundled in the plugin — most Studio users already have the tooling installed, and bundling it would double-register the same server. claude.ai users have access to the same MCP through the [connector catalog](https://claude.ai/connectors).
 
 ## Install the Studio Plugin
 
