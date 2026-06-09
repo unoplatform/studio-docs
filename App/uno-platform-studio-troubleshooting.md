@@ -3,13 +3,9 @@ uid: Uno.PlatformStudio.Troubleshooting
 ---
 # Troubleshooting
 
-This page helps you resolve issues you may run into while working in [Uno Platform Studio App](xref:Uno.PlatformStudio.GetStarted).
+[Uno Platform Studio App](xref:Uno.PlatformStudio.GetStarted) surfaces status updates, outcomes, and errors directly in the conversation panel and on the shell. This section lists the messages you may encounter, explains what triggers each one, and suggests how to respond.
 
-## Common Messages and Errors
-
-Uno Platform Studio App surfaces status updates, outcomes, and errors directly in the conversation panel and on the shell. This section lists the messages you are most likely to see, explains what triggers each one, and suggests how to respond.
-
-### Generation Outcomes
+## Generation Outcomes
 
 After each agent turn, the conversation panel shows an outcome card summarizing how the turn ended.
 
@@ -21,7 +17,7 @@ After each agent turn, the conversation panel shows an outcome card summarizing 
 | **Generation stopped** | Retry or send a new message to continue. | You stopped the generation while it was in progress. | Press the retry button on the card, or send a new message. |
 | **Critical failure** | Reporting helps us make Uno Platform Studio better. | The turn ended with an unrecoverable error. | Use the **Report** button on the card to send a feedback bundle. |
 
-### In-Progress Status
+## In-Progress Status
 
 While the agent is working, the conversation panel shows lightweight status indicators rather than full outcome cards.
 
@@ -31,7 +27,7 @@ While the agent is working, the conversation panel shows lightweight status indi
 | **Generation stopped.** | An inline status shown immediately when you cancel a turn. |
 | **Build**, **Read**, **Write**, **Patch**, **List files**, **Screenshot**, **Click element**, **Inspect visual tree**, **Generate API client** | The agent is executing the named tool. |
 
-### Conversation Limits
+## Conversation Limits
 
 The agent has a fixed context window. When you reach it, Uno Platform Studio App tries to compact the conversation automatically before asking you to take action.
 
@@ -45,7 +41,7 @@ The agent has a fixed context window. When you reach it, Uno Platform Studio App
 | **The conversation has grown too large. Please start a new conversation.** | The conversation cannot be compacted further. | Start a new conversation. Export the project first if you want to keep the current state. |
 | **The conversation reached the maximum number of actions in a single turn. You can continue by sending another message.** | The agent hit the per-turn action limit. | Send a follow-up prompt to continue the work. |
 
-### Credits and Billing
+## Credits and Billing
 
 Uno Platform Studio uses a credit-based model. See [Credits & Usage](xref:Uno.PlatformStudio.GetStarted#credits--usage) for the full breakdown.
 
@@ -54,7 +50,7 @@ Uno Platform Studio uses a credit-based model. See [Credits & Usage](xref:Uno.Pl
 | **80% of credits used** | You have consumed 80% of your credits for the current period. | Use **Top up** to add credits, or continue working; generation still functions. |
 | **Out of credits** | All credits for the current period are consumed. | Use **Upgrade plan** or wait for the period to reset. The banner shows when credits next reset. |
 
-### Sign-In and License
+## Sign-In and License
 
 These messages appear on the login page or when restoring a license.
 
@@ -68,7 +64,7 @@ These messages appear on the login page or when restoring a license.
 | **Something went wrong while importing.** | A general error occurred while importing your license file. | Retry, or sign in instead of importing. |
 | **An unexpected error occurred. Please retry or restart the application.** | A generic error reached the login page. | Use **Retry**. If the issue persists, restart Uno Platform Studio App. |
 
-### Starting a New Project
+## Starting a New Project
 
 When you start a new project while a session is active, Uno Platform Studio App confirms before discarding state.
 
