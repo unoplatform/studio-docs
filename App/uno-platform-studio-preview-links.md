@@ -26,6 +26,13 @@ managed the way you already manage your deployment credentials.
 
 Nothing about your app is uploaded to us.
 
+> [!IMPORTANT]
+> **The `uno-studio` CLI is not published yet.** `dotnet tool install --global uno.studio` cannot succeed
+> today — neither it nor the build engine it fetches has been pushed to NuGet. Everything below is complete
+> and exercised on our own CI against locally built packages, so the workflow, the option names and the
+> failure behavior are accurate rather than aspirational; what is missing is the publication step alone.
+> Until it lands, this article is a description of how the feature will be used, not something you can run.
+
 ## How it works
 
 1. Your workflow builds the app in the format Studio can open, using the `uno-studio` CLI.
@@ -109,8 +116,8 @@ jobs:
             --destination-path "$PREVIEW_PREFIX" \
             --source "$RUNNER_TEMP/preview"
 
-      # --emit puts the link in this step's outputs and in the job summary. `--json --no-logo` would
-      # give you the same values on standard output if you would rather pipe them.
+      # --emit puts the link in this step's outputs and in the job summary. `--output:json --no-logo`
+      # would give you the same values on standard output if you would rather pipe them.
       - name: Compose the link
         id: link
         run: |
@@ -194,7 +201,10 @@ around it, in which language, and whether you say it at all, is yours.
 `package link` prints its result on standard output, so a script can read it directly:
 
 ```bash
-LINK=$(uno-studio package link   --descriptor "$RUNNER_TEMP/preview/package-descriptor.json"   --published-base "$BASE"   --json --no-logo | jq -r .pinnedLink)
+LINK=$(uno-studio package link \
+  --descriptor "$RUNNER_TEMP/preview/package-descriptor.json" \
+  --published-base "$BASE" \
+  --output:json --no-logo | jq -r .pinnedLink)
 ```
 
 `--out <file>` writes the same document to a file when you want one; omit it and nothing touches the disk.
@@ -370,10 +380,11 @@ generators record where a project lived when they ran — but it means the direc
 readable by anyone who downloads the preview.
 
 On a GitHub-hosted runner that path names nobody. On a **self-hosted** runner it names the account the runner
-runs as. If that matters to you, pass `--staging` to point the build somewhere neutral:
+runs as. There is no option to redirect it today: point the build at a neutral working directory instead, by
+running it from one.
 
 ```bash
-uno-studio build --source . --out "$RUNNER_TEMP/preview" --staging /tmp/preview-build
+cd /tmp/preview-build && uno-studio build --source "$GITHUB_WORKSPACE" --out "$RUNNER_TEMP/preview"
 ```
 
 The build log and any compile errors are handled separately: those are rewritten to paths relative to your
@@ -406,13 +417,15 @@ Closing that gap is optional and needs one thing we cannot avoid providing: a se
 run's identity and sign a statement about it. That is the only part of this feature that involves us at all,
 it is off by default, and **it is not available yet**.
 
-Until it is, do not pass `--certify`. A preview that declares a signed statement Studio cannot verify is
-**refused** — not downgraded to the declared wording — because "the statement is missing" and "the statement
-was removed" look identical from the reviewer's side, and the safe reading of that is tampering. The result is
-that every preview opens from source, which is a working link but not the one you wanted.
+Until it is, there is nothing to pass: `uno-studio package certify` is not offered by this release, and
+`build`'s certification options are hidden. That is deliberate rather than incidental. A preview that
+declares a signed statement Studio cannot verify is **refused** — not downgraded to the declared wording —
+because "the statement is missing" and "the statement was removed" look identical from the reviewer's side,
+and the safe reading of that is tampering. So an option that could only produce a refused link is better not
+offered.
 
-When it does become available, the sequence is two steps in your workflow: `uno-studio build --certify` to
-declare the statement, then `uno-studio package certify` to obtain and publish it. Both, or neither.
+When it becomes available it will be two steps in your workflow: one to declare the statement as the build
+runs, one to obtain and publish it. Both, or neither.
 
 ## When a preview opens from source instead
 
@@ -422,7 +435,7 @@ This is normal, and the reviewer is always told which path was taken. Common rea
 | --- | --- |
 | "This preview is no longer available" | The files were removed by your cleanup or your retention rule, or the storage was unreachable. Also what a missing cross-origin rule looks like. |
 | "This preview was built for a different version of Studio" | Studio's build material changed since the preview was built. Push a new commit to rebuild. |
-| "This preview was not built for the surface you are on" | Only the web preview is published today. |
+| "This preview was not built for the platform you are on" | Only the web preview is published today. |
 | "The preview build did not succeed" | Your app did not compile. The comment links the build log. |
 | "What this link points at is not what the link was created for" | The published files changed after the link was posted. Worth looking into — see [Refusing overwrites](#refusing-overwrites). |
 
