@@ -4,7 +4,7 @@ uid: Uno.PlatformStudio.Skills
 
 # Skills & Plugins
 
-Skills in Uno Platform Studio are designed to help you complete end-to-end Uno workflows such as scaffolding, building, validating, and iterating. You install them as a single plugin, or individually as standalone skills for agents that don't support plugins, and your AI agent automatically picks the relevant ones as it works on your prompts.
+Skills in Uno Platform Studio are designed to help you complete end-to-end Uno workflows such as scaffolding, building, validating, and iterating. You install them as a single plugin, or individually as standalone skills for agents that don't support plugins. Your AI agent automatically discovers the installed skills from an advertised catalog and loads the relevant ones on demand as it works on your prompts.
 
 ## What Are Skills?
 
@@ -97,7 +97,7 @@ After plugin installation, skills are generally available automatically:
 
 1. Start a normal chat or prompt.
 2. Describe the Uno task you want to complete.
-3. The AI selects and executes applicable skills.
+3. The agent sees the skill catalog (names and short descriptions), then loads and follows the applicable skills on demand — only what the task needs is pulled into context.
 
 No special command is required for basic usage in most flows.
 
