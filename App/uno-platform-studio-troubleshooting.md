@@ -62,7 +62,7 @@ These messages appear on the login page or when restoring a license.
 | **Sign in was canceled or failed. Please try again.** | The sign-in flow did not complete. | Retry sign-in. If the issue persists, restart the application. |
 | **The imported file could not be validated.** | The license file you imported is invalid or unsupported. | Verify you exported the correct user file from a signed-in installation. |
 | **Something went wrong while importing.** | A general error occurred while importing your license file. | Retry, or sign in instead of importing. |
-| **An unexpected error occurred. Please retry or restart the application.** | A generic error reached the login page. | Use **Retry**. If the issue persists, restart Uno Platform Studio App. |
+| **An unexpected error occurred. Please retry or restart the application.** | A generic error reached the login page. The most common cause is a sign-out that did not complete. | Use **Retry**. If you were signing out, sign out again rather than restarting: a restart can silently resume the previous session, because the sign-out never finished clearing it. |
 
 ## Starting a New Project
 
