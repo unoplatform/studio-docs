@@ -1,5 +1,7 @@
 - name: Getting Started
   href: xref:Uno.PlatformStudio.GetStarted
+- name: Installing and Updating on Windows
+  href: xref:Uno.PlatformStudio.WindowsInstall
 - name: Preview links from your CI
   href: xref:Uno.PlatformStudio.PreviewLinks
 - name: Troubleshooting

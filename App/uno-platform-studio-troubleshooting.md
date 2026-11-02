@@ -77,6 +77,10 @@ When you start a new project while a session is active, Uno Platform Studio App 
 > [!TIP]
 > If a message recommends starting a new conversation but you want to keep the current app, **Export** it first from the top action bar. See [Export and IDE Handoff](xref:Uno.PlatformStudio.GetStarted#export-and-ide-handoff).
 
+## Installing and Updating on Windows
+
+For installing the Windows app, how its automatic updates work, and the `0x80073D02` entries every update leaves in the Windows log, see [Installing and Updating on Windows](xref:Uno.PlatformStudio.WindowsInstall).
+
 ## Reporting an Issue
 
 If you see a **Critical failure** card, or repeatedly hit an error you cannot work around, use **More > Send feedback** to send a feedback bundle. The bundle includes the conversation, logs, and project state needed for the Uno Platform team to investigate.
